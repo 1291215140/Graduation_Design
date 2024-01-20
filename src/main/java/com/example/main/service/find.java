@@ -1,8 +1,7 @@
 package com.example.main.service;
 import com.example.main.bean.usermessage;
-import com.example.main.bool.bool;
+import com.example.main.bool.tool;
 import com.example.main.mapper.mapper;
-import com.example.main.bean.bean;
 import jakarta.servlet.http.Cookie;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +12,9 @@ import org.springframework.stereotype.Service;
 public class find {
     @Autowired
     mapper mapper;
-    public void outputcookie(Cookie cookie[]){
-        for(Cookie c:cookie)
-        {
-            log.info(c.getName()+":"+c.getValue());
-        }
-
-    }
     public void savemessage(String username,String message)
     {
-        bool bool = new bool();
+        tool bool = new tool();
         usermessage usermessage = new usermessage();
         usermessage.setUsername(username);
         usermessage.setMessage(message);

@@ -9,7 +9,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <form action="/" method="post">
+            <form action="login" method="post">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" class="form-control" id="username" name="username" placeholder="Username">
@@ -22,7 +22,7 @@
             </form>
         </div>
         <!-- 一行文字-->
-        <p th:text="${str}"></p>
+        <p th:text="${message}"></p>
     </div>
 </div>
 </body>
