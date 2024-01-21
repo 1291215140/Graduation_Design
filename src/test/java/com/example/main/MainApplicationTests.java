@@ -1,7 +1,6 @@
 package com.example.main;
 
-import com.example.main.bean.usermessage;
-import com.example.main.bool.tool;
+import com.example.main.tool.tool;
 import com.example.main.mapper.mapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

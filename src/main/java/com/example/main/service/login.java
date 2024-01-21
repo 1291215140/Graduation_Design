@@ -1,7 +1,6 @@
 package com.example.main.service;
 
-import com.example.main.bool.tool;
-import com.example.main.mapper.mapper;
+import com.example.main.tool.tool;
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

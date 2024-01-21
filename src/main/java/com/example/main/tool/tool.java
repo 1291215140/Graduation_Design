@@ -1,9 +1,8 @@
-package com.example.main.bool;
+package com.example.main.tool;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 public class tool {
     //获取系统当前时间
