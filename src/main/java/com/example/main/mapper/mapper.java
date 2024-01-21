@@ -1,6 +1,7 @@
 package com.example.main.mapper;
 
 import com.example.main.bean.usermessage;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -21,4 +22,6 @@ public interface mapper {
     String selectcookie(HashMap map);
     @Update("update user set cookie = #{cookie} where username = #{username}")
     void updatecookie(HashMap map);
+    @Insert("insert into `user` (username,`password`) VALUES (#{username},#{password})")
+    void insertuser(HashMap map);
 }

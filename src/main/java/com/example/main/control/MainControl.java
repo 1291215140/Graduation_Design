@@ -1,6 +1,7 @@
 package com.example.main.control;
 import com.example.main.service.find;
 import com.example.main.service.login;
+import com.example.main.service.register;
 import jakarta.annotation.Resource;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.http.*;
@@ -44,8 +45,28 @@ public class MainControl {
             }
         }
     }
-    @RequestMapping("/register")
-    String register(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Autowired
+    register register;
+    @ResponseBody
+    @PostMapping("/register")
+    HashMap register(HttpServletRequest request, HttpServletResponse response) throws IOException {
+            HashMap map = new HashMap<>();
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            log.info("username:" + username + "password:" + password);
+            if(username == null || password == null)
+            {
+                map.put("status","100");
+            }
+            else
+            {
+                if(register.register(username, password))map.put("status","200");
+                else map.put("status","300");
+            }
+            return map;
+    }
+    @RequestMapping("/re")
+    String ceshi(HttpServletRequest request, HttpServletResponse response) throws IOException {
         return "register";
     }
 }
