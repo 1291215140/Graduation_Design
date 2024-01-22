@@ -14,8 +14,8 @@
                 alert("密码长度不能小于6位");
                 return false;
             }
-            if (password.length > 12) {
-                alert("密码长度不能大于12位");
+            if (password.length > 20) {
+                alert("密码长度不能大于20位");
                 return false;
             }
             if (password.search(/[\u4e00-\u9fa5]/) != -1) {
@@ -48,7 +48,9 @@
                     //如果用户名和密码都不为空则发送ajax请求
                     var data = {
                         username: username,
-                        password: password
+                        password: password,
+                        code: document.getElementById("code").value,
+                        email: document.getElementById("email").value
                     };
                     ajax("/register", data,"POST", success,error);
 
@@ -61,12 +63,16 @@
             {
                 alert("注册成功");
                 //跳转到登录页面
-                window.location.href = "login.html";
+                window.location.href = "login";
 
+            }
+            else if (data.status == 400)
+            {
+                alert("验证码不正确");
             }
             else if (data.status == 300)
             {
-                alert("用户名已存在");
+                alert("用户名已存在或邮箱已经注册");
             }
             else
             {
@@ -77,14 +83,48 @@
             console.log(data);
             alert("失败");
         }
-        //创建一个倒计时线程
-        function countdown() {
-            var time = 60;
-            while (time > 0) {
-                time--;
-                document.getElementById("time").innerHTML = time;
-                //触发函数
-                setTimeout(countdown, 1000);
+        /*按钮禁用60秒,并显示倒计时*/
+        function disabledButton(){
+            document.getElementById("sendCodeBtn").disabled = true //控制按钮为禁用
+            var second = 60;
+            var intervalObj = setInterval(function () {
+                document.getElementById("sendCodeBtn").innerText = second;
+                if(second == 0){
+                    document.getElementById("sendCodeBtn").disabled = true //将按钮可用
+                    /* 清除已设置的setInterval对象 */
+                    clearInterval(intervalObj);
+                }
+                second--;
+            }, 1000);
+        }
+        //发送验证码
+        function sendCode() {
+            //发送验证码按钮60s屏蔽
+            disabledButton();
+            var username = document.getElementById("name").value;
+            var email = document.getElementById("email").value;
+            if (username != ""&&email != "") {
+                var ss = function (data){
+                    if (data.status == 200) {
+                        alert("验证码发送成功");
+                        //将email输入框设成不可输入
+                        document.getElementById("email").readOnly = true;
+                        document.getElementById("name").readOnly = true;
+                    }
+                    else if (data.status == 300)
+                    {
+                        alert("用户名已存在");
+                    }
+                    else
+                    {
+                        alert("发送失败");
+                    }
+                }
+                ajax("/sendCode", {username: username,email: email}, "POST",ss, error);
+            }
+            else
+            {
+                alert("用户名不能为空");
             }
         }
     </script>
@@ -117,6 +157,22 @@
                         <div class="col-md-6">
                             <input type="password" class="form-control" id="rePassword" name="rePassword" placeholder="请再次输入密码">
                             <div id="rePasswordError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="email">邮箱</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="email" name="email" placeholder="请输入邮箱">
+                            <div id="emailError"></div>
+                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="code">验证码</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="code" name="code" placeholder="请输入验证码">
+                            <div id="codeError"></div>
+                            <button type="button" class="btn btn-default" id="sendCodeBtn" onclick="sendCode()">发送验证码</button>
                         </div>
                     </div>
                 </fieldset>

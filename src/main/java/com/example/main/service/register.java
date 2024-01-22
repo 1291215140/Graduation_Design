@@ -12,11 +12,12 @@ import java.util.HashMap;
 public class register{
     @Autowired
     mapper mapper;
-    public boolean register(String username, String password){
+    public boolean register(String username, String password, String email){
         HashMap<String, Object> map = new HashMap<>();
         map.put("username", username);
         map.put("password", password);
-        if(mapper.selectpassword(map)!= null) return false;
+        map.put("email", email);
+        if(mapper.selectpassword(map)!= null||mapper.selectemail(map)!= null) return false;
         else
         {
             mapper.insertuser(map);

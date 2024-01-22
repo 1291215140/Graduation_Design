@@ -18,6 +18,8 @@ public interface mapper {
     void insertmessage(usermessage message);
     @Select("select password from user where username = #{username}")
     String selectpassword(HashMap map);
+    @Select("select username from user where email = #{email}")
+    String selectemail(HashMap map);
     @Select("select username from user where cookie = #{cookie}")
     String selectcookie(HashMap map);
     @Update("update user set cookie = #{cookie} where username = #{username}")

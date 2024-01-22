@@ -1,7 +1,9 @@
 package com.example.main.control;
+import com.example.main.mapper.mapper;
 import com.example.main.service.find;
 import com.example.main.service.login;
 import com.example.main.service.register;
+import com.example.main.tool.sendmail;
 import jakarta.annotation.Resource;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.http.*;
@@ -10,6 +12,8 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.HashMap;
 @Slf4j
@@ -53,20 +57,64 @@ public class MainControl {
             HashMap map = new HashMap<>();
             String username = request.getParameter("username");
             String password = request.getParameter("password");
-            log.info("username:" + username + "password:" + password);
-            if(username == null || password == null)
-            {
-                map.put("status","100");
-            }
+            String code = request.getParameter("code");
+            String email = request.getParameter("email");
+            log.info("username:" + username + "password:" + password+"code:" + code);
+            if(username == null || password == null||code == null||email == null) map.put("status","100");
             else
             {
-                if(register.register(username, password))map.put("status","200");
-                else map.put("status","300");
+                //字符串转换成整数
+                int code1 = Integer.parseInt(code);
+                if(code1!=sendmail.map.get(username)) map.put("status","400");
+                else
+                {
+                    if(register.register(username, password, email)) map.put("status","200");
+                    else map.put("status","300");
+                    sendmail.map.remove(username);
+                }
             }
             return map;
     }
     @RequestMapping("/re")
     String ceshi(HttpServletRequest request, HttpServletResponse response) throws IOException {
         return "register";
+    }
+    @Autowired
+    mapper mapper;
+    //验证码
+    @ResponseBody
+    @RequestMapping("/sendCode")
+    HashMap code(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HashMap map = new HashMap<>();
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+        if (username == null||email == null) {
+            map.put("status","100");
+        }
+        else {
+            map.put("username",username);
+            if(mapper.selectpassword(map)!=null) map.put("status","300");
+            else {
+                //生成验证码
+                String code = "";
+                for(int i = 0; i < 5; i++)
+                {
+                    code += (int) (Math.random() * 10);
+                }
+                log.info("code"+code);
+                sendmail ss = new sendmail();
+                try {
+                    if (ss.sendMail(email, "验证码", "" + code)) {
+                        map.put("status", "200");
+                        sendmail.map.put(username, Integer.parseInt(code));
+                        log.info("验证码:" + code);
+                    } else map.put("status", "300");
+                } catch (MessagingException e) {
+                    map.put("status", "400");
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return map;
     }
 }

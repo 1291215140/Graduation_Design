@@ -1,8 +1,12 @@
 package com.example.main.tool;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 
 public class tool {
     //获取系统当前时间
@@ -30,5 +34,35 @@ public class tool {
             throw new RuntimeException(e);
         }
         return null;
+    }
+    public HashMap loadfile(String url)
+    {
+        byte[] set = new byte[0];
+        try {
+            set = tool.class.getClassLoader().getResource(url).openStream().readAllBytes();
+        } catch (IOException e) {
+            return null;
+        }
+        char [] chars = new char[set.length];
+        for (int i = 0; i < set.length; i++) {
+            chars[i] = (char) set[i];
+        }
+        HashMap map = new HashMap<>();
+        String key = "";
+        String value = "";
+        int i = 0;
+        while(i<chars.length) {
+            while(i<chars.length&&chars[i]!='=') key+=chars[i++];
+            //跳过=
+            i++;
+            while(i<chars.length&&chars[i]!=13&&chars[i]!=10) value+=chars[i++];
+            System.out.println(key+"="+value);
+            map.put(key,value);
+            key = "";
+            value = "";
+            i++;
+            i++;
+        }
+        return map;
     }
 }
