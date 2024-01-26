@@ -1,37 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"/>
     <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
     <script src="ajax.js"></script>
+    <script src="firm.js"></script>
     <script>
-        function firm(password)
-        {
-            //验证密码是否简单
-            if (password.length < 6) {
-                alert("密码长度不能小于6位");
-                return false;
-            }
-            if (password.length > 20) {
-                alert("密码长度不能大于20位");
-                return false;
-            }
-            if (password.search(/[\u4e00-\u9fa5]/) != -1) {
-                alert("密码不能包含中文");
-                return false;
-            }
-            if (password.search(/[0-9]/) == -1) {
-                alert("密码必须包含数字");
-                return false;
-            }
-            if (password.search(/[a-z]/) == -1) {
-                alert("密码必须包含小写字母");
-                return false;
-            }
-            return true;
-        }
+
         function register() {
             //如果两次密码不对则弹出提醒，并清空输入框
             if (document.getElementById("password").value != document.getElementById("rePassword").value) {
@@ -52,33 +29,33 @@
                         code: document.getElementById("code").value,
                         email: document.getElementById("email").value
                     };
-                    ajax("/register", data,"POST", success,error);
+                    ajax("/register", data,"POST", function (data) {
+                        console.log(data);
+                        if (data.status == 200)
+                        {
+                            alert("注册成功");
+                            //跳转到登录页面
+                            window.location.href = "login";
+
+                        }
+                        else if (data.status == 400)
+                        {
+                            alert("验证码不正确");
+                        }
+                        else if (data.status == 300)
+                        {
+                            alert("用户名已存在或邮箱已经注册");
+                        }
+                        else
+                        {
+                            alert("注册失败");
+                        }
+                    },error);
 
                 }
             }
         }
-        function success(data) {
-            console.log(data);
-            if (data.status == 200)
-            {
-                alert("注册成功");
-                //跳转到登录页面
-                window.location.href = "login";
 
-            }
-            else if (data.status == 400)
-            {
-                alert("验证码不正确");
-            }
-            else if (data.status == 300)
-            {
-                alert("用户名已存在或邮箱已经注册");
-            }
-            else
-            {
-                alert("注册失败");
-            }
-        }
         function error(data) {
             console.log(data);
             alert("失败");
@@ -90,7 +67,8 @@
             var intervalObj = setInterval(function () {
                 document.getElementById("sendCodeBtn").innerText = second;
                 if(second == 0){
-                    document.getElementById("sendCodeBtn").disabled = true //将按钮可用
+                    document.getElementById("sendCodeBtn").disabled = false; //将按钮可用
+                    document.getElementById("sendCodeBtn").innerText = "重新发送";
                     /* 清除已设置的setInterval对象 */
                     clearInterval(intervalObj);
                 }
@@ -104,7 +82,7 @@
             var username = document.getElementById("name").value;
             var email = document.getElementById("email").value;
             if (username != ""&&email != "") {
-                var ss = function (data){
+                ajax("/sendCode", {username: username,email: email}, "POST",function (data){
                     if (data.status == 200) {
                         alert("验证码发送成功");
                         //将email输入框设成不可输入
@@ -119,8 +97,7 @@
                     {
                         alert("发送失败");
                     }
-                }
-                ajax("/sendCode", {username: username,email: email}, "POST",ss, error);
+                }, error);
             }
             else
             {

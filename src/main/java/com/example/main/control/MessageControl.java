@@ -1,6 +1,7 @@
 package com.example.main.control;
 
 import com.example.main.service.find;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -18,20 +19,14 @@ public class MessageControl {
     com.example.main.service.find find;
     @ResponseBody
     @GetMapping("/savemessage")
-    HashMap<String,String> save(HttpServletRequest request, HttpServletResponse response)
+    boolean save(HttpServletRequest request, HttpServletResponse response)
     {
-        String name = request.getParameter("name");
+        Cookie[] cookies = request.getCookies();
+        String name = find.getname(cookies);
         String message = request.getParameter("message");
-        HashMap<String,String> map = new HashMap<>();
         log.info(name+"发来消息:"+message);
-        if(name == null || message == null)
-        {
-            map.put("message","消息为空");
-            return map;
-        }
-        find.savemessage(name,message);
-        map.put("message","成功保存消息");
-        return map;
+        if(message == null||name == null) return false;
+        return find.savemessage(name,message);
     }
     @GetMapping("/ceshi")
     String getmessge(HttpServletRequest request, HttpServletResponse response)

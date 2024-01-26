@@ -21,6 +21,8 @@ import java.util.HashMap;
 public class MainControl {
     @Autowired
     login login;
+    @Autowired
+    mapper mapper;
     @RequestMapping("/")
     String index(HttpServletRequest request, HttpServletResponse response,@Param("cookie") String mess){
         //实现cookie登录
@@ -31,9 +33,9 @@ public class MainControl {
     String login(HttpServletRequest request, HttpServletResponse response, HashMap map) throws IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        log.info("username:" + username + "password:" + password);
         if (username == null || password == null) return "login";
         else {
+            log.info("username:" + username + "password:" + password);
             if (login.login(username, password)==false) {
                 //如果账号密码不对则返回登录页面
                 map.put("message","用户名或密码错误");
@@ -41,8 +43,13 @@ public class MainControl {
             }
             else
             {
+                Cookie cookie =login.SetCookie(username);
+                if(cookie==null) return "login";
                 //为当前用户添加cookie
-                response.addCookie(login.SetCookie(username));
+                response.addCookie(cookie);
+                Cookie ck = new Cookie("username",username);
+                ck.setMaxAge(3600);
+                response.addCookie(ck);
                 //重定向到首页
                 response.sendRedirect("/");
                 return null;
@@ -51,36 +58,37 @@ public class MainControl {
     }
     @Autowired
     register register;
+
+
+    @RequestMapping("/zhuce")
+    String zhuce(HttpServletRequest request, HttpServletResponse response) {
+        return "register";
+    }
     @ResponseBody
     @PostMapping("/register")
     HashMap register(HttpServletRequest request, HttpServletResponse response) throws IOException {
-            HashMap map = new HashMap<>();
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            String code = request.getParameter("code");
-            String email = request.getParameter("email");
-            log.info("username:" + username + "password:" + password+"code:" + code);
-            if(username == null || password == null||code == null||email == null) map.put("status","100");
+        HashMap map = new HashMap<>();
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String code = request.getParameter("code");
+        String email = request.getParameter("email");
+        log.info("username:" + username + "password:" + password+"code:" + code);
+        if(username == null || password == null||code == null||email == null) map.put("status","100");
+        else
+        {
+            //字符串转换成整数
+            int code1 = Integer.parseInt(code);
+            if(code1!=sendmail.map.get(email)) map.put("status","400");
             else
             {
-                //字符串转换成整数
-                int code1 = Integer.parseInt(code);
-                if(code1!=sendmail.map.get(username)) map.put("status","400");
-                else
-                {
-                    if(register.register(username, password, email)) map.put("status","200");
-                    else map.put("status","300");
-                    sendmail.map.remove(username);
-                }
+                if(register.register(username, password, email)) map.put("status","200");
+                else map.put("status","300");
+                sendmail.map.remove(username);
             }
-            return map;
+
+        }
+        return map;
     }
-    @RequestMapping("/re")
-    String ceshi(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        return "register";
-    }
-    @Autowired
-    mapper mapper;
     //验证码
     @ResponseBody
     @RequestMapping("/sendCode")
@@ -88,33 +96,95 @@ public class MainControl {
         HashMap map = new HashMap<>();
         String username = request.getParameter("username");
         String email = request.getParameter("email");
-        if (username == null||email == null) {
-            map.put("status","100");
-        }
-        else {
-            map.put("username",username);
-            if(mapper.selectpassword(map)!=null) map.put("status","300");
-            else {
-                //生成验证码
-                String code = "";
-                for(int i = 0; i < 5; i++)
+        //如果传来的find是有参数的，说明是找回页面传来，如果是无参数，说明是注册页面传来的
+        String find = request.getParameter("find");
+        if (email == null) map.put("status","100");
+        else
+        {
+            //生成验证码
+            String code = "";
+            for(int i = 0; i < 5; i++)
+            {
+                code += (int) (Math.random() * 10);
+            }
+            //获取发送邮件对象
+            sendmail ss = new sendmail();
+            log.info("code"+code);
+            if (find!=null){
+                if(username!=null) map.put("status","100");//传来了意外的参数
+                else
                 {
-                    code += (int) (Math.random() * 10);
+                    map.put("email",email);
+                    username = mapper.selectemail(map);
+                    if(username==null) map.put("status","300");
+                    else {
+                        try {
+                            if(ss.sendMail(email, "验证码", "" + code))
+                            {
+                                map.put("status","200");
+                                sendmail.map.put(email, Integer.parseInt(code));
+                                log.info("验证码:" + code);
+                            }
+                            else map.put("status","400");
+                        } catch (MessagingException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
-                log.info("code"+code);
-                sendmail ss = new sendmail();
-                try {
-                    if (ss.sendMail(email, "验证码", "" + code)) {
-                        map.put("status", "200");
-                        sendmail.map.put(username, Integer.parseInt(code));
-                        log.info("验证码:" + code);
-                    } else map.put("status", "300");
-                } catch (MessagingException e) {
-                    map.put("status", "400");
-                    throw new RuntimeException(e);
+            }
+            else
+            {
+                map.put("username",username);
+                if(mapper.selectpassword(map)!=null) map.put("status","300");
+                else {
+                    try {
+                        if (ss.sendMail(email, "验证码", "" + code))
+                            {
+                            map.put("status", "200");
+                            sendmail.map.put(email, Integer.parseInt(code));
+                            log.info("验证码:" + code);
+                            }
+                        else map.put("status", "300");
+                        }
+                    catch (MessagingException e) {
+                        map.put("status", "400");
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
         return map;
     }
+    @RequestMapping("/forgetpassword")
+    String forgetpassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return "forgetpassword";
+    }
+    @ResponseBody
+    @RequestMapping("/setpassword")
+    HashMap findpassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HashMap map = new HashMap<>();
+        String code = request.getParameter("code");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        log.info("code:" + code + "email:" + email + "password:" + password);
+        if (code == null || email == null || password == null) map.put("status","100");
+        else
+        {
+            //字符串转换成整数
+            int code1 = Integer.parseInt(code);
+            if(code1!=sendmail.map.get(email)) map.put("status","300");
+            else
+            {
+                sendmail.map.remove(email);
+                map.put("email",email);
+                map.put("password",password);
+                if(mapper.updatepassword(map)) map.put("status","200");
+                else {
+                    map.put("status","400");
+                }
+            }
+        }
+        return map;
+    }
+
 }

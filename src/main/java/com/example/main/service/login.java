@@ -27,19 +27,24 @@ public class login {
     public boolean login(Cookie[] cookies) {
         if (cookies == null || cookies.length == 0) return false;
         String cookie = null;
+        String username = null;
         for(int i=0;i<cookies.length;i++) {
-            if(cookies[i].getName().equals("cookie")) {
-                cookie = cookies[i].getValue();
+            if(cookie!= null&&username!=null) {
                 break;
             }
+            if(cookies[i].getName().equals("cookie")) {
+                cookie = cookies[i].getValue();
+            }
+            if(cookies[i].getName().equals("username")) {
+                username = cookies[i].getValue();
+            }
         }
-        log.info("cookie:"+cookie);
         if(cookie==null||cookie.equals("")) return false;
         else
         {
             HashMap map = new HashMap();
             map.put("cookie", cookie);
-            if(mapper.selectcookie(map)!=null) return true;
+            if(mapper.selectcookie(map).equals(username)) return true;
             return false;
         }
     }
@@ -50,10 +55,10 @@ public class login {
         HashMap map = new HashMap();
         map.put("username",username);
         map.put("cookie",cookie);
-        mapper.updatecookie(map);
-        log.info(cookie);
+        if(mapper.updatecookie(map)==false) return null;
         Cookie cookie1 = new Cookie("cookie",cookie);
-        cookie1.setMaxAge(10000);
+        //设置cookie的内容
+        cookie1.setMaxAge(100000);
         return cookie1;
     }
 

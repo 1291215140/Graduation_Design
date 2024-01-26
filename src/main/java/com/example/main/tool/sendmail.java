@@ -1,9 +1,12 @@
 package com.example.main.tool;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.HashMap;
 import java.util.Properties;
+@Slf4j
 public class sendmail {
 
     public static  HashMap<String,Integer> map = new HashMap();
@@ -40,7 +43,7 @@ public class sendmail {
             // 设置邮件正文
             message.setText(content);
             transport.sendMessage(message, message.getAllRecipients());
-            System.out.println("邮件已发送成功！");
+            log.info("邮件发送成功");
             transport.close();
             return  true;
         } catch (MessagingException e) {

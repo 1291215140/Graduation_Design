@@ -1,5 +1,7 @@
 package com.example.main.tool;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -7,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-
+@Slf4j
 public class tool {
     //获取系统当前时间
     public String gettime(){
@@ -56,7 +58,7 @@ public class tool {
             //跳过=
             i++;
             while(i<chars.length&&chars[i]!=13&&chars[i]!=10) value+=chars[i++];
-            System.out.println(key+"="+value);
+            log.info(key+"="+value);
             map.put(key,value);
             key = "";
             value = "";

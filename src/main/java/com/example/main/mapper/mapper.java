@@ -22,8 +22,10 @@ public interface mapper {
     String selectemail(HashMap map);
     @Select("select username from user where cookie = #{cookie}")
     String selectcookie(HashMap map);
+    @Update("update user set password = #{password} where email = #{email}")
+    boolean updatepassword(HashMap map);
     @Update("update user set cookie = #{cookie} where username = #{username}")
-    void updatecookie(HashMap map);
-    @Insert("insert into `user` (username,`password`) VALUES (#{username},#{password})")
-    void insertuser(HashMap map);
+    boolean updatecookie(HashMap map);
+    @Insert("insert into `user` (username,`password`,email) VALUES (#{username},#{password},#{email})")
+    boolean insertuser(HashMap map);
 }

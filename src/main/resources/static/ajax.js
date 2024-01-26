@@ -16,3 +16,5 @@ function ajax(url, data, type, success, error) {
         error: error
     })
 }
+
+
