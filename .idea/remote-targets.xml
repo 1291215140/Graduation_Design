@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="openjdk:latest" type="docker" uuid="3944c1a9-a0ba-4fc5-8e7b-7b8f2a5ab03f">
+        <config>
+          <option name="targetPlatform">
+            <TargetPlatform />
+          </option>
+          <option name="buildNotPull" value="false" />
+          <option name="containerConfig">
+            <ContainerConfig>
+              <option name="runCliOptions" value="--entrypoint= --rm -p 8080:8080" />
+            </ContainerConfig>
+          </option>
+          <option name="pullImageConfig">
+            <PullImageConfig>
+              <option name="tagToPull" value="openjdk:latest" />
+            </PullImageConfig>
+          </option>
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="agentFolder">
+              <VolumeState>
+                <option name="targetSpecificBits">
+                  <map>
+                    <entry key="mountAsVolume" value="false" />
+                  </map>
+                </option>
+              </VolumeState>
+            </option>
+            <option name="classpathFolder">
+              <VolumeState>
+                <option name="targetSpecificBits">
+                  <map>
+                    <entry key="mountAsVolume" value="false" />
+                  </map>
+                </option>
+              </VolumeState>
+            </option>
+            <option name="homePath" value="/usr/java/openjdk-17" />
+            <option name="javaVersionString" value="17.0.1" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>

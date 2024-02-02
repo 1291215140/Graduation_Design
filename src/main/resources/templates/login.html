@@ -11,7 +11,7 @@
             align-items: center;
             height: 100vh;
             /*设置背景图片*/
-            background-image:url("img/img.jpg");
+            background-image:url("http://localhost/app/login.jpg");
             /*使背景图片适应大小*/
             background-size: cover;
         }
@@ -237,13 +237,12 @@
             </form>
         </div>
         <!-- 一行文字-->
-        <p th:text="${message}"></p>
+        <p th:text="${context}"></p>
         <div class="col-md-6 offset-md-3">
             <a href="/zhuce">注册</a>
             <a href="/forgetpassword">忘记密码</a>
         </div>
     </div>
-
 </div>
 </body>
 </html>

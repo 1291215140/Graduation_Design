@@ -1,6 +1,6 @@
 package com.example.main.mapper;
 
-import com.example.main.bean.usermessage;
+import com.example.main.data.user;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -9,23 +9,18 @@ import org.apache.ibatis.annotations.Update;
 import java.util.HashMap;
 
 @Mapper
-public interface mapper {
-    @Select("select message from usermessage where username = #{username}")
-    String selectmessage(usermessage message);
-    @Select("update usermessage set message = #{message} where username = #{username}")
-    void updatemessage(usermessage message);
-    @Select("insert into usermessage values(#{username},#{message})")
-    void insertmessage(usermessage message);
+public interface usermapper {
+
     @Select("select password from user where username = #{username}")
-    String selectpassword(HashMap map);
+    String selectpassword(user user);
     @Select("select username from user where email = #{email}")
-    String selectemail(HashMap map);
+    String selectemail(user user);
     @Select("select username from user where cookie = #{cookie}")
-    String selectcookie(HashMap map);
+    String selectcookie(user user);
     @Update("update user set password = #{password} where email = #{email}")
-    boolean updatepassword(HashMap map);
+    boolean updatepassword(user user);
     @Update("update user set cookie = #{cookie} where username = #{username}")
-    boolean updatecookie(HashMap map);
+    boolean updatecookie(user user);
     @Insert("insert into `user` (username,`password`,email) VALUES (#{username},#{password},#{email})")
-    boolean insertuser(HashMap map);
+    boolean insertuser(user user);
 }

@@ -1,7 +1,7 @@
 package com.example.main.control;
 
-import com.example.main.service.find;
-import jakarta.servlet.http.Cookie;
+import com.example.main.mapper.messagemapper;
+import com.example.main.service.RedisService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +16,23 @@ import java.util.HashMap;
 @Controller
 public class MessageControl {
     @Autowired
-    com.example.main.service.find find;
+    messagemapper messagemaper;
+    @Autowired
+    RedisService redisService;
+    //将数据从数据库取到redis
     @ResponseBody
-    @GetMapping("/savemessage")
+    @GetMapping("/loadmessage")
     boolean save(HttpServletRequest request, HttpServletResponse response)
     {
-        Cookie[] cookies = request.getCookies();
-        String name = find.getname(cookies);
-        String message = request.getParameter("message");
-        log.info(name+"发来消息:"+message);
-        if(message == null||name == null) return false;
-        return find.savemessage(name,message);
+        String username = request.getParameter("username");
+        log.info(username);
+        if (username==null) return false;
+        HashMap map = new HashMap();
+        map.put("username",username);
+        String message = messagemaper.selectMessage(map);
+        if(message==null) return false;
+        redisService.Set(username, message);
+        return true;
     }
     @GetMapping("/ceshi")
     String getmessge(HttpServletRequest request, HttpServletResponse response)

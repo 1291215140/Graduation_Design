@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: qwer1234
+      MYSQL_DATABASE: graduat
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3306:3306"
+  redis:
+      image: redis
+      command: redis-server --requirepass qwer1234
+      ports:
+        - "6379:6379"
+  java-app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
