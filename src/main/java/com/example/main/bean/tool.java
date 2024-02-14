@@ -2,15 +2,9 @@ package com.example.main.bean;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 @Slf4j
 public class tool {
     @Bean
@@ -18,7 +12,7 @@ public class tool {
     public String getnowtime(){
         java.util.Date date = new java.util.Date();
         java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String dateString = formatter.format(date);
+        var dateString = formatter.format(date);
         return dateString;
     }
     public String md5(String username)
