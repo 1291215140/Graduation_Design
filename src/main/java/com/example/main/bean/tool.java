@@ -1,4 +1,4 @@
-package com.example.main.tool;
+package com.example.main.bean;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +13,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 @Slf4j
 public class tool {
-    //获取系统当前时间
-    public String gettime(){
+    @Bean
+    //获取系统当前时间，并返回格式为yyyy-MM-dd HH:mm:ss的字符串
+    public String getnowtime(){
         java.util.Date date = new java.util.Date();
         java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateString = formatter.format(date);

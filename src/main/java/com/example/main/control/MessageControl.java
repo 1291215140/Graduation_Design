@@ -22,14 +22,14 @@ public class MessageControl {
     //将数据从数据库取到redis
     @ResponseBody
     @GetMapping("/loadmessage")
-    boolean save(HttpServletRequest request, HttpServletResponse response)
+    boolean loadmessage(HttpServletRequest request, HttpServletResponse response)
     {
-        String username = request.getParameter("username");
+        var username = request.getParameter("username");
         log.info(username);
         if (username==null) return false;
-        HashMap map = new HashMap();
+        var map = new HashMap();
         map.put("username",username);
-        String message = messagemaper.selectMessage(map);
+        var message = messagemaper.selectMessage(map);
         if(message==null) return false;
         redisService.Set(username, message);
         return true;

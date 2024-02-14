@@ -3,7 +3,7 @@ import com.example.main.data.user;
 import com.example.main.mapper.usermapper;
 import com.example.main.service.SendEmail;
 import com.example.main.service.Verification_Code_Map;
-import com.example.main.tool.tool;
+import com.example.main.bean.tool;
 import jakarta.servlet.http.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
@@ -24,7 +24,7 @@ public class LoginControl {
     @RequestMapping("/")
     String index(HttpServletRequest request, HttpServletResponse response,@Param("cookie") String mess){
         //实现cookie登录
-        Cookie[] cookies = request.getCookies();
+        var cookies = request.getCookies();
         if(cookies!=null&&cookies.length!=0)
         {
             String cookie = null;
@@ -43,10 +43,10 @@ public class LoginControl {
             if(cookie==null||cookie.equals(""))  return "forward:login";
             else
             {
-                user user = new user();
+                var user = new user();
                 user.setUsername(username);
                 user.setCookie(cookie);
-                String ck = usermapper.selectcookie(user);
+                var ck = usermapper.selectcookie(user);
                 if(ck==null||ck.equals("")) return "forward:login";
                 if(usermapper.selectcookie(user).equals(username))return "index";
                 return "forward:login";
@@ -56,8 +56,8 @@ public class LoginControl {
     }
     @RequestMapping("/login")
     String login(HttpServletRequest request, HttpServletResponse response, HashMap map) throws IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        var username = request.getParameter("username");
+        var password = request.getParameter("password");
         if (username == null || password == null||password.equals("")||username.equals("")) return "login";
         else {
             user user = new user();
@@ -71,8 +71,8 @@ public class LoginControl {
             }
             else
             {
-                tool tool = new tool();
-                String cookie = tool.md5(username);
+                var tool = new tool();
+                var cookie = tool.md5(username);
                 user.setCookie(cookie);
                 if(cookie==null) return "login";
                 if(!usermapper.updatecookie(user)) return "login";
@@ -85,7 +85,11 @@ public class LoginControl {
                 ck.setMaxAge(3600);
                 response.addCookie(ck);
                 //重定向到首页
-                response.sendRedirect("/");
+                try {
+                    response.sendRedirect("/");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 return null;
             }
         }

@@ -1,5 +1,6 @@
 package com.example.main.control;
 
+import com.example.main.data.ResponseData;
 import com.example.main.data.user;
 import com.example.main.mapper.usermapper;
 import com.example.main.service.SendEmail;
@@ -12,9 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import java.io.IOException;
-import java.util.HashMap;
 
 @Slf4j
 @Controller
@@ -31,31 +30,29 @@ public class RegisterControl {
     }
     @ResponseBody
     @PostMapping("/register")
-    HashMap register(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HashMap map = new HashMap<>();
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String code = request.getParameter("code");
-        String email = request.getParameter("email");
+    ResponseData register(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        var username = request.getParameter("username");
+        var password = request.getParameter("password");
+        var code = request.getParameter("code");
+        var email = request.getParameter("email");
         log.info("username:" + username + "password:" + password+"code:" + code);
-        if(username == null || password == null||code == null||email == null) map.put("status","100");
+        if(username == null || password == null||code == null||email == null) return new ResponseData("100");
         else
         {
             log.info("register say code="+codemap.GetValue(email));
-            if(!code.equals(codemap.GetValue(email))) map.put("status","400");
+            if(!code.equals(codemap.GetValue(email))) return new ResponseData("400");
             else
             {
-                user user = new user();
+                var user = new user();
                 user.setUsername(username);
                 user.setEmail(email);
                 user.setPassword(password);
-                if(usermapper.selectemail(user)!=null||usermapper.selectpassword(user)!=null) map.put("status","300");
-                else map.put("status","200");
+                codemap.delete(email);
+                if(usermapper.selectemail(user)!=null||usermapper.selectpassword(user)!=null) return new ResponseData("300");
                 usermapper.insertuser(user);
-                codemap.delete(username);
+                return new ResponseData("200");
             }
         }
-        return map;
     }
 
 }
