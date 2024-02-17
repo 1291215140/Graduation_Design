@@ -6,7 +6,6 @@ import com.example.main.service.Verification_Code_Map;
 import com.example.main.bean.tool;
 import jakarta.servlet.http.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,7 @@ public class LoginControl {
     @Autowired
     Verification_Code_Map codemap;
     @RequestMapping("/")
-    String index(HttpServletRequest request, HttpServletResponse response,@Param("cookie") String mess){
+    String index(HttpServletRequest request, HttpServletResponse response){
         //实现cookie登录
         var cookies = request.getCookies();
         if(cookies!=null&&cookies.length!=0)
@@ -60,7 +59,7 @@ public class LoginControl {
         var password = request.getParameter("password");
         if (username == null || password == null||password.equals("")||username.equals("")) return "login";
         else {
-            user user = new user();
+            var user = new user();
             user.setUsername(username);
             user.setPassword(password);
             log.info("login say:"+"username:" + username + "password:" + password);
@@ -72,25 +71,24 @@ public class LoginControl {
             else
             {
                 var tool = new tool();
-                var cookie = tool.md5(username);
-                user.setCookie(cookie);
-                if(cookie==null) return "login";
+                var cookie_str = tool.md5(username);
+                user.setCookie(cookie_str);
+                if(cookie_str==null) return "login";
                 if(!usermapper.updatecookie(user)) return "login";
-                //为当前用户添加cookie
-                Cookie cookie1 = new Cookie("cookie",cookie);
-                //设置cookie的内容
-                cookie1.setMaxAge(100000);
+                //为当前用户添加cookie并设置cookie的内容
+                var cookie1 = new Cookie("cookie",cookie_str);
+                var cookie2 = new Cookie("username",username);
+                // 设置Cookie的路径为根路径
+                cookie1.setPath("/");
+                cookie2.setPath("/");
+                // 设置Cookie的其他属性，如过期时间（可选）
+                cookie1.setMaxAge(3600);
+                cookie2.setMaxAge(3600);// 设置过期时间为1小时
+                //将两个cookie对象加入到response中
                 response.addCookie(cookie1);
-                Cookie ck = new Cookie("username",username);
-                ck.setMaxAge(3600);
-                response.addCookie(ck);
+                response.addCookie(cookie2);
                 //重定向到首页
-                try {
-                    response.sendRedirect("/");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                return null;
+                return "redirect:/";
             }
         }
     }

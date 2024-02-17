@@ -1,11 +1,8 @@
 package com.example.main.bean;
-
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-@Slf4j
 public class tool {
     @Bean
     //获取系统当前时间，并返回格式为yyyy-MM-dd HH:mm:ss的字符串

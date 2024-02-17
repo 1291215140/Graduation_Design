@@ -1,83 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>洞洞</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat App Layout</title>
     <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-    <script src="chat.js"></script>
-    <style>
-        #chat-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            height: 100vh;
-        }
-
-        #return {
-            margin-bottom: 10px; /* 添加一些底部间距 */
-        }
-
-        #chat {
-            background-color: #f0f0f0;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        #message {
-            width: 80%; /* 调整输入框的宽度 */
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px; /* 添加圆角 */
-            margin-bottom: 10px;
-        }
-
-        button {
-            padding: 10px;
-            margin-right: 10px;
-            cursor: pointer;
-            border: none;
-            background-color: #4caf50;
-            color: white;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        /* ... 其他样式 */
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-left: 5px;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="javascript/index.js"></script>
 </head>
 <body>
-<div id="chat-container">
-    <div id="return"></div>
-    <div id="chat">
-        <div>
-            <!-- 一个大的输入框 -->
-            <textarea id="message" rows="1" cols="50"></textarea>
-            <!-- 绑定按钮事件 -->
-            <button onclick="sendmessage()" id="sendButton" >发送消息</button>
-            <button onclick="logout()">登出</button>
-        </div>
+
+<div id="app-container">
+  <div id="sidebar">
+    Sidebar Content
+    <button id="new-drawing-button">Create New Drawing</button>
+  </div>
+
+  <div id="chat-container">
+  
+    <div id="message-list">
+      <!-- Messages will go here -->
     </div>
+    
+    <div id="input-area">
+      <textarea type="text" id="input-box" placeholder="你想和我聊点什么？(Shift + Enter = 换行)" rows="1"></textarea>
+      <button id="send-button" style="background: #45a049;">发送</button>
+    </div>
+    
+  </div>
 </div>
 </body>
 </html>
