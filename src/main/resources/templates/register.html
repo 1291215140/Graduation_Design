@@ -105,8 +105,83 @@
             }
         }
     </script>
+    <style>
+        html{
+           background-image: url("../static/img/110236734_p0.png");
+            background-size:cover;
+        }
+        html,body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 300px;
+            padding: 20px;
+            border-radius: 15px;
+            margin-left: 770px;
+            opacity: 0.5;
+            box-shadow: 0px 10px 18px -2px rgba(0, 0, 0, 0.25);
+            background-color: #ffffff;
+            /* 边框 */
+            border: 5px solid rgb(41, 94, 160);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type=text], input[type=password] {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        input[type=submit] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            color: #fff;
+            background-color: #007BFF;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #0056b3;
+        }
+        button {
+            border: none;
+            padding: 10px 30px; /* 这将使按钮宽度大于高度，从而实现椭圆形状 */
+            border-radius: 50px; /* 这将使边框变为圆角 */
+            color: white; /* 这将设置按钮的字体颜色为白色 */
+            font-size: 16px;
+            background: rgb(41, 94, 160);
+            cursor: pointer;
+            transition: background 1s ease-in-out; /* 这将设置背景颜色的过渡效果 */
+        }
+
+        button:hover {
+            background: linear-gradient(to right, violet, blue, cyan, green, yellow, orange, red); /* 当鼠标悬停时，颜色渐变方向相反 */
+        }
+        #sendCodeBtn {
+            text-align: center; /* 水平居中 */
+            line-height: 10px; /* 垂直居中 - 此值应等于按钮的高度 */
+        }
+    </style>
 </head>
 <body>
+
 <!--注册页面-->
 <div class="container">
     <div class="row">
@@ -149,7 +224,7 @@
                         <div class="col-md-6">
                             <input type="text" class="form-control" id="code" name="code" placeholder="请输入验证码">
                             <div id="codeError"></div>
-                            <button type="button" class="btn btn-default" id="sendCodeBtn" onclick="sendCode()">发送验证码</button>
+                            <button type="button" class="btn btn-default" id="sendCodeBtn" style="height: 30px" onclick="sendCode()">发送验证码</button>
                         </div>
                     </div>
                 </fieldset>
@@ -161,6 +236,7 @@
                 </div>
             </form>
         </div>
-
+    </div>
+</div>
 </body>
 </html>

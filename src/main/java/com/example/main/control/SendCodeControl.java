@@ -44,7 +44,7 @@ public class SendCodeControl {
             if(username!=null) return new ResponseData("100");//传来了意外的参数
             if(usermapper.selectemail(user)==null) return new ResponseData("300");//邮箱不存在
             else {
-                if(sendmail.SendEmail(email, "验证码", "" + code))
+                if(sendmail.SendEmail(email, "验证码", code))
                 {
                     codemap.PutValue(email,code);
                     log.info("SendCode Say"+"验证码:" + code);
@@ -56,7 +56,7 @@ public class SendCodeControl {
         else
         {
             if(usermapper.selectpassword(user)!=null) new ResponseData("300");
-            if (sendmail.SendEmail(email, "验证码", "" + code))
+            if (sendmail.SendEmail(email, "验证码", code))
             {
                 codemap.PutValue(email, code);
                 log.info("验证码:" + code);

@@ -58,7 +58,7 @@ inputBox.addEventListener('keypress', function (e) {
         console.log("输出");
         sendMessage();
     }
-    else {return;}
+    else {}
 });
 inputBox.addEventListener('input', function (e) {
     if(e.inputType==="deleteContentBackward")

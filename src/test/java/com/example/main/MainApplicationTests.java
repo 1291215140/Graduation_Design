@@ -14,6 +14,7 @@ class MainApplicationTests {
     SendEmail sendEmail;
     @Test
     void contextLoads()  {
+        log.info("hello");
     }
 
 

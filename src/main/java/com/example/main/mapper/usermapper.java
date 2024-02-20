@@ -1,13 +1,7 @@
 package com.example.main.mapper;
 
 import com.example.main.data.user;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-
-import java.util.HashMap;
-
+import org.apache.ibatis.annotations.*;
 @Mapper
 public interface usermapper {
 

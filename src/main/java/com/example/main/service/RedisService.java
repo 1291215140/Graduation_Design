@@ -19,4 +19,6 @@ public class RedisService {
     }
     public Set getAllkeys() {return this.redisTemplate.keys("*");}
     public void Del(String key) {this.redisTemplate.delete(key);}
+
+
 }
